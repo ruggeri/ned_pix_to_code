@@ -1,6 +1,6 @@
 from ast import BlockCommandNode, TextCommandNode
 from typing import List, Tuple
-from token import Token
+from mytoken import Token
 
 # document: commands_block
 def consume_document(tokens: List[Token]):
@@ -159,4 +159,4 @@ print(root_commands)
 print(error)
 
 import pdb
-# pdb.set_trace()
+pdb.set_trace()

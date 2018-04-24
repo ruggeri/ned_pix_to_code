@@ -1,5 +1,5 @@
 import re
-import token
+import mytoken
 
 WHITESPACE_REGEXP = re.compile(r"\w+")
 
@@ -9,7 +9,7 @@ def tokenize(body: str):
 
   tokens = []
   for token_str in token_strs:
-    t = token.Token.parse(token_str)
+    t = mytoken.Token.parse(token_str)
     tokens.append(t)
 
   return tokens
