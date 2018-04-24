@@ -10,19 +10,19 @@ class Token:
     raise f"Failed to parse token: ${str}"
 
   def is_block_command_operator(self):
-    return false
+    return False
 
   def is_text_command_operator(self):
-    return false
+    return False
 
   def is_text_command_separator_token(self):
-    return false
+    return False
 
   def is_block_start_token(self):
-    return false
+    return False
 
   def is_block_end_token(self):
-    return false
+    return False
 
 class TextCommandOperatorToken(Token):
   TEXT_COMMAND_OPERATORS = [
@@ -49,7 +49,7 @@ class TextCommandOperatorToken(Token):
     self.text_command = text_command
 
   def is_text_command_operator(self):
-    return true
+    return True
 Token.TOKEN_TYPES.append(TextCommandOperatorToken)
 
 class BlockCommandOperatorToken(Token):
@@ -74,7 +74,11 @@ class BlockCommandOperatorToken(Token):
     self.block_command = block_command
 
   def is_block_command_operator(self):
-    return true
+    return True
+
+  def __str__(self):
+    return f"<token: {self.block_command}>"
+
 Token.TOKEN_TYPES.append(BlockCommandOperatorToken)
 
 class SymbolToken(Token):
@@ -89,19 +93,26 @@ class TextCommandSeparatorToken(SymbolToken):
   TOKEN = ","
 
   def is_text_command_separator_token(self):
-    return true
+    return True
 Token.TOKEN_TYPES.append(TextCommandSeparatorToken)
 
 class BlockStartToken(SymbolToken):
   TOKEN = "{"
 
-  def is_block_command_start_token(self):
-    return true
+  def is_block_start_token(self):
+    return True
+
+  def __str__(self):
+    return "<token: {>"
 Token.TOKEN_TYPES.append(BlockStartToken)
 
 class BlockEndToken(SymbolToken):
   TOKEN = "}"
 
-  def is_block_command_end_token(self):
-    return true
+  def is_block_end_token(self):
+    return True
+
+  def __str__(self):
+    return "<token: }>"
+
 Token.TOKEN_TYPES.append(BlockEndToken)
