@@ -152,11 +152,14 @@ def consume_block_command(tokens: List[Token], token_idx: int):
 
   return block_command_node, token_idx, None
 
-import tokenizer
-tokens = tokenizer.tokenize_file("data/FEF248A4-868E-4A6C-94D6-9B38A67974F0.gui")
-root_commands, error = consume_document(tokens)
-print(root_commands)
-print(error)
+if __name__ == "__main__":
+  import sys
+  import tokenizer
 
-import pdb
-pdb.set_trace()
+  tokens = tokenizer.tokenize_file(sys.argv[1])
+  root_commands, error = consume_document(tokens)
+  print(root_commands)
+  print(error)
+
+  import pdb
+  pdb.set_trace()
