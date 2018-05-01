@@ -82,6 +82,8 @@ class BlockCommandOperatorToken(Token):
 Token.TOKEN_TYPES.append(BlockCommandOperatorToken)
 
 class SymbolToken(Token):
+  TOKEN = None
+
   @classmethod
   def parse(clazz, token_str):
     if token_str == clazz.TOKEN:
