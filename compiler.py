@@ -1,6 +1,8 @@
 from ast import BlockCommandNode, TextCommandNode
 import os
 import os.path
+import random
+import string
 from typing import Dict
 
 TEXT_SYMBOL = "[]"
@@ -19,8 +21,10 @@ def template(name: str) -> str:
 
   return content
 
+MAX_TEXT_LENGTH = 20
 def random_text():
-  return "ASDF"
+  text_length = random.randint(1, MAX_TEXT_LENGTH)
+  return "".join([random.choice(string.ascii_letters) for _ in range(text_length)])
 
 def render_text_command_node(text_command_node: TextCommandNode):
   text_command = text_command_node.text_command_token.text_command
