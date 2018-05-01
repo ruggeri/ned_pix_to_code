@@ -1,62 +1,61 @@
+from ast import BlockCommandNode, TextCommandNode
 import os
 import os.path
+from typing import Dict
 
 TEXT_SYMBOL = "[]"
 CHILDREN_SYMBOL = "{}"
 
-class OperatorToken:
-  OPERATOR_TOKENS_MAP = {}
+TEMPLATES: Dict[str, str] = {}
 
-  @classmethod
-  def get(clazz, token_name) -> OperatorToken:
-    return clazz.OPERATOR_TOKENS_MAP[token_name]
+def template(name: str) -> str:
+  if name in TEMPLATES:
+    return TEMPLATES[name]
 
-  @classmethod
-  def load_all(clazz):
-      for fname in os.listdir("./templates"):
-        path_name = os.path.join("./templates", fname)
-        if not os.path.isfile(path_name): continue
-        token_name = fname.rstrip(".html")
-        with open(path_name) as f:
-          content = f.read()
-          clazz.OPERATOR_TOKENS_MAP[token_name] = OperatorToken(token_name, content)
+  path = os.path.join("./templates", f"{name}.html")
+  with open(path) as f:
+    content = f.read()
+    TEMPLATES[name] = content
 
-  def __init__(self, token_name: str, content: str):
-    self.name = token_name
+  return content
 
-    if not content.find(TEXT_SYMBOL) == -1:
-      self.left, self.right = content.split(TEXT_SYMBOL)
-      self._node_type = "TEXT"
-      return
-    if not content.find(CHILDREN_SYMBOL) == -1:
-      self.left, self.right = content.split(CHILDREN_SYMBOL)
-      self._node_type = "CHILDREN"
-      return
+def random_text():
+  return "ASDF"
 
-    raise Exception("Neither text or children operator???")
+def render_text_command_node(text_command_node: TextCommandNode):
+  text_command = text_command_node.text_command_token.text_command
+  _template = template(text_command)
 
-  @property
-  def is_text_node(self):
-    return self._node_type == "TEXT"
+  # Kinda lame because replaces all TEXT_SYMBOL with same random text.
+  # But all text commands only have one TEXT_SYMBOL anyway...
+  return _template.replace(TEXT_SYMBOL, random_text())
 
-  @property
-  def is_children_node(self):
-    return self._node_type == "CHILDREN"
+def render_block_command_node(block_command_node: BlockCommandNode):
+  inner_content = render(block_command_node.children)
 
+  block_command = block_command_node.block_command_token.block_command
+  _template = template(block_command)
+  return _template.replace(CHILDREN_SYMBOL, inner_content)
 
-class ASTNode:
-  def __init__(self, token: OperatorToken):
-    self.token = token
-    if self.token.is_children_node:
-      self.children = []
-    else:
-      self.children = None
+def render(node_or_nodes) -> str:
+  if isinstance(node_or_nodes, list):
+    content = ""
+    for node in node_or_nodes:
+      content += render(node)
+    return content
+  elif isinstance(node_or_nodes, BlockCommandNode):
+    return render_block_command_node(node_or_nodes)
+  elif isinstance(node_or_nodes, TextCommandNode):
+    return render_text_command_node(node_or_nodes)
+  else:
+    raise Exception("Unexpected node type!")
 
-  def generate(self):
-    result = self.token.left
-    if self.children:
-      result += ",".join([child.generate() for child in self.children])
-    result += self.token.right
-    return result
+if __name__ == "__main__":
+  import sys
+  import parser
+  import tokenizer
 
-OperatorToken.load_all()
+  tokens = tokenizer.tokenize_file(sys.argv[1])
+  root_commands, error = parser.consume_document(tokens)
+  rendered_document = render(root_commands)
+  print(rendered_document)
