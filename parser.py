@@ -13,7 +13,7 @@ def consume_document(tokens: List[Token]):
   elif token_idx != len(tokens):
     return None, [f"Expected end of document, not: {tokens[token_idx]}"]
 
-  return root_command_nodes, None
+  return BlockCommandNode(Token.parse("body"), root_command_nodes), None
 
 # commands_block: text_commands_block
 # commands_block: block_commands_block
