@@ -2,6 +2,14 @@ class Token:
   TOKEN_TYPES = []
 
   @classmethod
+  def all(clazz):
+    result = []
+    for subclass in clazz.TOKEN_TYPES:
+      result.extend(subclass.all())
+
+    return result
+
+  @classmethod
   def parse(clazz, str):
     for token_type in clazz.TOKEN_TYPES:
       token = token_type.parse(str)
@@ -39,6 +47,10 @@ class TextCommandOperatorToken(Token):
   }
 
   @classmethod
+  def all(clazz):
+    return [clazz.parse(name) for name in clazz.TEXT_COMMAND_OPERATORS]
+
+  @classmethod
   def parse(clazz, token_str):
     if token_str not in clazz.TEXT_COMMAND_OPERATORS:
       return None
@@ -54,6 +66,9 @@ class TextCommandOperatorToken(Token):
   def is_text_command_operator(self):
     return True
 
+  def __repr__(self):
+    return f"<token: {self.text_command}>"
+
 Token.TOKEN_TYPES.append(TextCommandOperatorToken)
 
 class BlockCommandOperatorToken(Token):
@@ -66,6 +81,10 @@ class BlockCommandOperatorToken(Token):
     "double": None,
     "quadruple": None,
   }
+
+  @classmethod
+  def all(clazz):
+    return [clazz.parse(name) for name in clazz.BLOCK_COMMAND_OPERATORS]
 
   @classmethod
   def parse(clazz, token_str):
@@ -83,7 +102,7 @@ class BlockCommandOperatorToken(Token):
   def is_block_command_operator(self):
     return True
 
-  def __str__(self):
+  def __repr__(self):
     return f"<token: {self.block_command}>"
 
 Token.TOKEN_TYPES.append(BlockCommandOperatorToken)
@@ -91,6 +110,10 @@ Token.TOKEN_TYPES.append(BlockCommandOperatorToken)
 class SymbolToken(Token):
   TOKEN = None
   SINGLETON = None
+
+  @classmethod
+  def all(clazz):
+    return [clazz.parse(clazz.TOKEN)]
 
   @classmethod
   def parse(clazz, token_str):
@@ -101,6 +124,9 @@ class SymbolToken(Token):
       clazz.SINGLETON = clazz()
 
     return clazz.SINGLETON
+
+  def __repr__(self):
+    return f"<token: {type(self).TOKEN}>"
 
 class TextCommandSeparatorToken(SymbolToken):
   TOKEN = ","
@@ -116,9 +142,6 @@ class BlockStartToken(SymbolToken):
   def is_block_start_token(self):
     return True
 
-  def __str__(self):
-    return "<token: {>"
-
 Token.TOKEN_TYPES.append(BlockStartToken)
 
 class BlockEndToken(SymbolToken):
@@ -126,8 +149,5 @@ class BlockEndToken(SymbolToken):
 
   def is_block_end_token(self):
     return True
-
-  def __str__(self):
-    return "<token: }>"
 
 Token.TOKEN_TYPES.append(BlockEndToken)
