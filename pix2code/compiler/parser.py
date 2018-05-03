@@ -1,6 +1,6 @@
-from ast import BlockCommandNode, TextCommandNode
+from pix2code.compiler.ast import BlockCommandNode, TextCommandNode
+from pix2code.compiler.mytoken import Token
 from typing import List, Tuple
-from mytoken import Token
 
 # document: commands_block
 def consume_document(tokens: List[Token]):

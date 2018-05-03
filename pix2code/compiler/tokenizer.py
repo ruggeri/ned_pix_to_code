@@ -1,5 +1,5 @@
+import pix2code.compiler.mytoken as mytoken
 import re
-import mytoken
 
 WHITESPACE_REGEXP = re.compile(r"\w+")
 

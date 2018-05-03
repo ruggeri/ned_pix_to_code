@@ -1,4 +1,4 @@
-import mytoken
+import pix2code.compiler.mytoken as mytoken
 
 class BlockCommandNode:
   def __init__(self, block_command_token: mytoken.BlockCommandOperatorToken, children):

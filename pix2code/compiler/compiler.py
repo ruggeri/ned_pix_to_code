@@ -1,6 +1,6 @@
-from ast import BlockCommandNode, TextCommandNode
 import os
 import os.path
+from pix2code.compiler.ast import BlockCommandNode, TextCommandNode
 import random
 import string
 from typing import Dict
@@ -10,11 +10,13 @@ CHILDREN_SYMBOL = "{}"
 
 TEMPLATES: Dict[str, str] = {}
 
+TEMPLATES_PATH = os.path.join(os.path.dirname(__file__), "templates")
+
 def template(name: str) -> str:
   if name in TEMPLATES:
     return TEMPLATES[name]
 
-  path = os.path.join("./templates", f"{name}.html")
+  path = os.path.join(TEMPLATES_PATH, f"{name}.html")
   with open(path) as f:
     content = f.read()
     TEMPLATES[name] = content
@@ -53,13 +55,3 @@ def render(node_or_nodes) -> str:
     return render_text_command_node(node_or_nodes)
   else:
     raise Exception("Unexpected node type!")
-
-if __name__ == "__main__":
-  import sys
-  import parser
-  import tokenizer
-
-  tokens = tokenizer.tokenize_file(sys.argv[1])
-  root_commands, error = parser.consume_document(tokens)
-  rendered_document = render(root_commands)
-  print(rendered_document)
