@@ -21,10 +21,15 @@ ID_TO_TOKEN = {
 }
 NUM_TOKENS = len(ALL_TOKENS)
 
-def one_hot(idx):
-  result = np.zeros(NUM_TOKENS)
-  result[idx] = 1
+def token_to_one_hot(token):
+  token_idx = TOKEN_TO_ID[token]
+  result = np.zeros(NUM_TOKENS, np.bool)
+  result[token_idx] = True
   return result
+
+def one_hot_to_token(one_hot):
+  token_idx = np.argmax(one_hot)
+  return ID_TO_TOKEN[token_idx]
 
 def load_gui_datafile(fpath):
   tokens = tokenizer.tokenize_file(fpath)
@@ -33,13 +38,12 @@ def load_gui_datafile(fpath):
   y = []
 
   window = np.tile(
-    one_hot(TOKEN_TO_ID[EMPTY_TOKEN]),
+    token_to_one_hot(EMPTY_TOKEN),
     (config.TOKENS_WINDOW, 1)
   )
 
   for token in tokens:
-    token_idx = TOKEN_TO_ID[token]
-    token_one_hot = one_hot(token_idx)
+    token_one_hot = token_to_one_hot(token)
 
     X.append(window)
     y.append(token_one_hot)
@@ -59,8 +63,8 @@ def load_png_datafile(fpath):
 
 def one_hot_window_to_tokens(window):
   tokens = []
-  for one_hot_token in window:
-    token = ID_TO_TOKEN[np.argmax(one_hot_token)]
+  for one_hot in window:
+    token = one_hot_to_token(one_hot)
     tokens.append(token)
   return tokens
 
