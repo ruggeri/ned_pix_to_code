@@ -94,6 +94,15 @@ def load_datafiles(data_dir_path, limit = None):
     gui_X, y = load_gui_datafile(gui_filepath)
     png_X = load_png_datafile(png_filepath)
 
-    dataset[datahash] = (gui_X, png_X, y)
+    dataset[datahash] = { "gui": gui_X, "png": png_X, "y": y }
 
+  return dataset
+
+def save_dataset(data_file_path, dataset):
+  np.savez_compressed(data_file_path, dataset = dataset)
+
+def load_compressed_dataset(data_file_path):
+  npz_data = np.load(data_file_path)
+  # We use `()` because we saved a single dict object.
+  dataset = npz_data["dataset"][()]
   return dataset
