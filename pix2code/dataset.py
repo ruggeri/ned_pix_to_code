@@ -53,6 +53,7 @@ def load_gui_datafile(fpath):
 
 def load_png_datafile(fpath):
   img = Image.open(fpath)
+  img = img.resize((config.IMAGE_SIZE, config.IMAGE_SIZE), Image.BICUBIC)
   img_data = np.asarray(img)
   return img_data
 
